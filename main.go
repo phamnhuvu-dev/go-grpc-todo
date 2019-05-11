@@ -1,10 +1,12 @@
 package main
 
 import (
+	"context"
 	"go-grpc-todo/user"
 	"google.golang.org/grpc"
 	"log"
 	"net"
+	"time"
 )
 
 const (
@@ -16,9 +18,26 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
-	s := grpc.NewServer()
-	user.RegisterUserGRPCServer(s, &user.Service{})
-	if err := s.Serve(lis); err != nil {
+	server := grpc.NewServer(grpc.UnaryInterceptor(unaryInterceptor))
+
+	user.RegisterUserGRPCServer(server, &user.Service{})
+	if err := server.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
 	}
+}
+
+func unaryInterceptor(ctx context.Context,
+	req interface{},
+	info *grpc.UnaryServerInfo,
+	handler grpc.UnaryHandler) (interface{}, error) {
+	start := time.Now()
+
+	h, err := handler(ctx, req)
+
+	log.Printf("Request - Method:%s\tDuration:%s\tError:%v\n",
+		info.FullMethod,
+		time.Since(start),
+		err)
+
+	return h, err
 }

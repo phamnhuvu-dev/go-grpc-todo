@@ -11,7 +11,7 @@ type Service struct {
 func (s *Service) Login(ctx context.Context, req *UserLoginRequest) (*UserLoginResponse, error) {
 	log.Printf(req.Username)
 	log.Printf(req.Password)
-	return &UserLoginResponse{}, nil
+	return &UserLoginResponse{User: &User{Username: req.Username, Name:"Vu", Email:"phamnhuvu"}}, nil
 }
 
 func (s *Service) Register(ctx context.Context, req *UserRegisterRequest) (*UserRegisterResponse, error) {
