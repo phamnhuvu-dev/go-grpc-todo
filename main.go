@@ -31,6 +31,12 @@ func unaryInterceptor(ctx context.Context,
 	info *grpc.UnaryServerInfo,
 	handler grpc.UnaryHandler) (interface{}, error) {
 	start := time.Now()
+	method := info.FullMethod
+	if method == "/UserGRPC/Login" || method == "/UserGRPC/Register" {
+		log.Println("Don't check")
+	} else {
+		log.Println("Check")
+	}
 
 	h, err := handler(ctx, req)
 

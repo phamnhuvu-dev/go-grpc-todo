@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"go-grpc-todo/user"
 	"google.golang.org/grpc"
 	"log"
@@ -13,7 +14,15 @@ const (
 	defaultName = "world"
 )
 
+type JwsPayload struct {
+	Name      string
+	CreatedAt time.Time
+}
+
 func main() {
+	payload := &JwsPayload{Name: "Pham Nhu Vu", CreatedAt: time.Now()}
+	fmt.Println(*payload)
+
 	conn, err := grpc.Dial(address, grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
